@@ -10,13 +10,15 @@ import { v4 as uuidV4 } from "uuid";
 
 type Context = {
   addTimer: (duration: number) => void;
-  removeTimerById: (tId: number) => void;
+  removeTimerById: (tId: string) => void;
   startTimer: () => void;
   pauseTimer: () => void;
   reset: () => void;
   timers: Timer[];
   globalTimerInMs: number;
   restart: () => void;
+  saveTimers: () => void;
+  loadTimers: () => void;
 };
 
 const TimerContext = createContext<Context | null>(null);
@@ -43,7 +45,7 @@ export function TimerProvider({ children }: PropsWithChildren) {
       return [...p, { id: uuidV4(), durationInMs: durationInSec * 1000 }];
     });
 
-  const removeTimerById = (id: number) =>
+  const removeTimerById = (id: string) =>
     setTimers((p) => {
       return p.filter((s) => s.id !== id);
     });
@@ -66,7 +68,7 @@ export function TimerProvider({ children }: PropsWithChildren) {
     let savedState = [];
     try {
       savedState = JSON.parse(
-        localStorage.getItem("sequential-timers.timers") ?? "[]",
+        localStorage.getItem("sequential-timers.timers") ?? "[]"
       );
     } catch {
       savedState = [];
@@ -99,7 +101,7 @@ export default function useTimerContext() {
   const ctx = useContext(TimerContext);
   if (ctx === null) {
     throw new Error(
-      "`useTimerProvider` returns can only be used inside `TimerContext`",
+      "`useTimerProvider` returns can only be used inside `TimerContext`"
     );
   }
   return ctx;

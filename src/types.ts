@@ -1,5 +1,5 @@
 export type Timer = {
-  id: number;
+  id: string;
   durationInMs: number;
 };
 
